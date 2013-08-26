@@ -30,9 +30,10 @@ B. Change CONSUMER_SECRET with your Consumer secret from step 5 at line no 6.
 # Design Details:
 
 __Authorization With Face-Book:__ To use Twitter API in your android application you have to authorize application.
- as sample I have authorized my application in TwitterApp.java file. In this method you have to pass three parameters :
- 1. Your host Activity on which you have to get callback from Facebook API.</br>
- 4. Once your application is authorize , you can use face-Book API directly.
+ as sample I have authorized my application in TwitterApp.java file.
+ 1. We require CONSUMER_KEY and CONSUMER_SECRET here.</br>
+ 2. Once your application is authorize , you can use face-Book API directly.
+ 
 ``` 
   private void authorizeApp() {
 	  	ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -50,4 +51,29 @@ __Authorization With Face-Book:__ To use Twitter API in your android application
   		}
   	}
   
+```
+
+__Handle Authorization callback :__ After authorization step you have to handle authorize callback and have to save authorization details such that next time no authorization needed.
+This is done in TwitterApp.java file.
+
+```
+   protected void handleCallback() {
+		Uri uri = getIntent().getData();
+		if (uri != null && uri.toString().startsWith(Constants.CALLBACK_URL)) {
+			String verifier = uri.getQueryParameter(Constants.IEXTRA_OAUTH_VERIFIER);
+            try { 
+                AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier); 
+                Editor e = mSharedPreferences.edit();
+                e.putString(Constants.PREF_KEY_TOKEN, accessToken.getToken()); 
+                e.putString(Constants.PREF_KEY_SECRET, accessToken.getTokenSecret()); 
+                e.putString(Constants.PREF_KEY_USER, accessToken.getScreenName()); 
+                e.commit();
+                
+	        } catch (Exception e) { 
+	                Log.e(TAG, e.getMessage()); 
+	                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show(); 
+			}
+        }		
+
+	}
 ```
