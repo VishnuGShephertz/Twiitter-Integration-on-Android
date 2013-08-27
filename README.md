@@ -30,7 +30,7 @@ B. Change CONSUMER_SECRET with your Consumer secret from step 5 at line no 6.
 
 # Design Details:
 
-__Authorization With Face-Book:__ To use Twitter API in your android application you have to authorize application.
+__Authorization With Twitter:__ To use Twitter API in your android application you have to authorize application.
  as sample I have authorized my application in TwitterApp.java file.
  1. We require CONSUMER_KEY and CONSUMER_SECRET here.</br>
  2. Once your application is authorize , you can use face-Book API directly.
