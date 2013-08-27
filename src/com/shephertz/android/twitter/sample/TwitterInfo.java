@@ -2,6 +2,15 @@ package com.shephertz.android.twitter.sample;
 
 import java.util.Date;
 
+/*
+ * @author Vishnu Garg
+ * This class Show information of a Tweets
+ * Twitter Name
+ * Tweet Count
+ * Picture Url
+ * Tweet Content
+ * 
+ */
 public class TwitterInfo {
 
 	

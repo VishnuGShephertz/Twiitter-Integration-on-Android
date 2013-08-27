@@ -9,23 +9,29 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Stack;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
-
+/*
+ * @author Vishnu Garg
+ */
 public class ImageLoader {
 	private int requiredSize=0;
     private boolean loadNormal=true;
-	// the simplest in-memory cache implementation. This should be replaced with
-	// something like SoftReference or BitmapOptions.inPurgeable(since 1.6)
+
 	private HashMap<String, Bitmap> cache = new HashMap<String, Bitmap>();
 
 	private File cacheDir;
 
+	/*
+	 * Constructor of Class
+	 * @param context of the Activity which is calling
+	 * @param imageSize required for image sampling if not pass -1
+	 * 
+	 */
 	public ImageLoader(Context context,int imageSize) {
 		photoLoaderThread.setPriority(Thread.NORM_PRIORITY - 1);
 		requiredSize=imageSize;
@@ -35,7 +41,7 @@ public class ImageLoader {
 		if (android.os.Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED))
 			cacheDir = new File(
-					android.os.Environment.getExternalStorageDirectory(),Const.APP_NAME);
+					android.os.Environment.getExternalStorageDirectory(),Constants.APP_NAME);
 		else
 			cacheDir = context.getCacheDir();
 		if (!cacheDir.exists())
@@ -44,6 +50,12 @@ public class ImageLoader {
 
 	final int stub_id = R.drawable.icon;
 
+	/*
+	 * This function loads image on ImageView in background Thread
+	 * @param url URL of image 
+	 * @param imageView on which image is going to be displayed
+	 * 
+	 */
 	public void DisplayImage(String url,ImageView imageView) {
 		if (cache.containsKey(url)){
 			imageView.setImageBitmap(cache.get(url));
@@ -54,6 +66,11 @@ public class ImageLoader {
 		}
 	}
 
+	/*
+	 *  This function makes queue of images when the are requested to load
+	 * @param url URL of image 
+	 * @param imageView on which image is going to be displayed
+	 */
 	private void queuePhoto(String url, ImageView imageView) {
 		// This ImageView may be used for other images before. So there may be
 		// some old tasks in the queue. We need to discard them.
@@ -69,6 +86,11 @@ public class ImageLoader {
 			photoLoaderThread.start();
 	}
 
+	/*
+	 * This function used to get Bitmap of image.
+	 * Also used to do sampling of image if required else load without sampling
+	 * @param url of Image
+	 */
 	public  Bitmap getBitmap(String url) {
 		// I identify images by hashcode. Not a perfect solution, good for the
 		// demo.
@@ -109,6 +131,10 @@ public class ImageLoader {
 		}
 	}
 
+	/*
+	 * This function decode File in Bitmap without sampling
+	 * @param file the is going to be decoded.
+	 */
 	private Bitmap decodeWithoutSampling(File f){
 		try {
 			return BitmapFactory.decodeStream(new FileInputStream(f));
@@ -118,7 +144,11 @@ public class ImageLoader {
 		return null;
 	}
 	
-	// decodes image and scales it to reduce memory consumption
+	/*
+	 * This function decode File in Bitmap with sampling
+	 * This is uses to reduce memory consumption of our Application
+	 * @param file the is going to be decoded.
+	 */
 	private Bitmap decodewithSampleing(File f) {
 		try {
 			// decode image size
@@ -143,7 +173,9 @@ public class ImageLoader {
 		return null;
 	}
 
-	// Task for the queue
+	/*
+	 * Class Task for the Queue
+	 */
 	private class PhotoToLoad {
 		public String url;
 		public ImageView imageView;
@@ -156,11 +188,16 @@ public class ImageLoader {
 
 	PhotosQueue photosQueue = new PhotosQueue();
 
+	/*
+	 * Stops the Thread
+	 */
 	public void stopThread() {
 		photoLoaderThread.interrupt();
 	}
 
-	// stores list of photos to download
+	/*
+	 * This class stores the images that are downloaded.
+	 */
 	class PhotosQueue {
 		private Stack<PhotoToLoad> photosToLoad = new Stack<PhotoToLoad>();
 
@@ -175,6 +212,11 @@ public class ImageLoader {
 		}
 	}
 
+	
+/*
+ * This class load image in background Thread
+ * 
+ */
 	class PhotosLoader extends Thread {
 		public void run() {
 			try {
@@ -213,7 +255,9 @@ public class ImageLoader {
 
 	PhotosLoader photoLoaderThread = new PhotosLoader();
 
-	// Used to display bitmap in the UI thread
+	/*
+	 * This class display Image or Bitmap in UI Thread
+	 */
 	class BitmapDisplayer implements Runnable {
 		Bitmap bitmap;
 		ImageView imageView;
@@ -231,6 +275,9 @@ public class ImageLoader {
 		}
 	}
 
+	/*
+	 * This function clear the memory cache if memory is full
+	 */
 	public void clearCache() {
 		// clear memory cache
 		cache.clear();

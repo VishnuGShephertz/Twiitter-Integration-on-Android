@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/*
+ * @author Vishnu Garg
+ */
 public class TweetDetails extends Activity {
 
 	private String myTwitterName;
@@ -17,25 +20,30 @@ public class TweetDetails extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tweet_detail);
-
 		imageloader = new ImageLoader(this, 0);
-
 		upDateView();
 		buildHeader();
 
 	}
 
+	/*
+	 * Handle click on Back button
+	 */
 	public void onBackClicked(View view) {
 		finish();
-
 	}
 
+	/*
+	 * Show Your Screen Name on header
+	 */
 	private void buildHeader() {
-
 		TextView header = (TextView) findViewById(R.id.page_header);
 		header.setText(myTwitterName);
 	}
 
+	/*
+	 * This function shows all details of Tweet Selected by you
+	 */
 	private void upDateView() {
 		Intent intent = getIntent();
 		myTwitterName = intent.getStringExtra("screenName");
@@ -62,6 +70,9 @@ public class TweetDetails extends Activity {
 
 	}
 
+	/*
+	 * Handle Click event on re-Tweet button
+	 */
 	public void onRetweetClicked(View view) {
 		Intent viewIntent = new Intent("android.intent.action.VIEW",
 				Uri.parse("https://mobile.twitter.com/" + myTwitterName));

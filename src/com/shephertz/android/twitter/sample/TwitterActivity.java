@@ -2,11 +2,6 @@ package com.shephertz.android.twitter.sample;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,18 +13,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shephertz.android.twitter.sample.TwitterService.MyTwitterListener;
 
 
-public class TwitterActivity extends Activity {
+/*
+ * @author Vishnu Garg
+ * This class shows all Tweets of User in a List
+ */
+public class TwitterActivity extends Activity implements MyTwitterListener{
 
 	private ArrayList<TwitterInfo> tweetInfoList;
 	private ListView list;
@@ -47,7 +43,6 @@ public class TwitterActivity extends Activity {
 		loadMyTweets();
 	}
 	private void buildHeader() {
-		
 		TextView header = (TextView)findViewById(R.id.page_header);
 		header.setText( myTwittername);
 	}
@@ -62,11 +57,11 @@ public class TwitterActivity extends Activity {
 	
 	private void loadMyTweets(){
 		try{
-			Intent intent=getIntent();
-		myTwittername=intent.getStringExtra(Const.PREF_KEY_USER);
+		Intent intent=getIntent();
+		myTwittername=intent.getStringExtra(Constants.PREF_KEY_USER);
 		buildHeader();
-		String myToken=intent.getStringExtra(Const.PREF_KEY_TOKEN);
-		String myTokenSecret=intent.getStringExtra(Const.PREF_KEY_SECRET);
+		String myToken=intent.getStringExtra(Constants.PREF_KEY_TOKEN);
+		String myTokenSecret=intent.getStringExtra(Constants.PREF_KEY_SECRET);
 		showLaoding("Loading tweets.....");
 		new TwitterService().loadTweets(myToken,myTokenSecret,this);
 		}
@@ -74,9 +69,11 @@ public class TwitterActivity extends Activity {
 		}
 	}
 	
+	/*
+	 * Make tweet list
+	 */
 	private void buildListView() {
 		list = (ListView) findViewById(R.id.list);
-		
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long duration) {
@@ -85,6 +82,9 @@ public class TwitterActivity extends Activity {
 		});
 	}
 
+	/*
+	 * Call TweetDetails Activty to show details of a Tweet
+	 */
 	private void showTweetInfo(TwitterInfo tweet){
 		Intent intent = new Intent(TwitterActivity.this, TweetDetails.class);
 		intent.putExtra("count", tweet.getCount());
@@ -109,14 +109,22 @@ public class TwitterActivity extends Activity {
 		super.onDestroy();
 
 	}
-	
-	 void onTweetList(ArrayList<TwitterInfo> allTweets){
+	/*
+	 * (non-Javadoc)
+	 * @see com.shephertz.android.twitter.sample.TwitterService.MyTwitterListener#onTweetList(java.util.ArrayList)
+	 * Callback method when Tweets are Loaded from web
+	 */
+	 public void onTweetList(ArrayList<TwitterInfo> allTweets){
 		progressDialog.dismiss();
 		this.tweetInfoList=allTweets;
 		list.setAdapter(new ActionListAdapter(this, tweetInfoList));
 	}
-	
-	 void onError(String msg){
+	/*
+	 * (non-Javadoc)
+	 * @see com.shephertz.android.twitter.sample.TwitterService.MyTwitterListener#onError(java.lang.String)
+	 * Callback when getting error or exception in loading Tweets from web
+	 */
+	 public void onError(String msg){
 		progressDialog.dismiss();
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
@@ -124,7 +132,7 @@ public class TwitterActivity extends Activity {
 	
 	
 	/*
-	 * Used to show friend list
+	 * Used to show Tweet list
 	 */
 	private class ActionListAdapter extends BaseAdapter {
 		private Activity activity;
@@ -162,7 +170,6 @@ public class TwitterActivity extends Activity {
 				}
 			}
 			itemName.setText(tweet.getName().trim());
-			//text.setTextColor(AppContext.textColor);
 			text.setText(tweet.getText().toString().trim());
 					return view;
 		}

@@ -10,13 +10,19 @@ import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.os.Handler;
+
+/*
+ * @author Vishnu Garg
+ */
 public class TwitterService {
 
 
 	/*
-	 * This function validate user's authentication with APP42
+	 * This function Load all Tweets of User
+	 * @param twitterToken
+	 * @param twitterSecret
 	 */
-	public void loadTweets(final String twitterToken,final String twitterSecret,final TwitterActivity callBack) {
+	 void loadTweets(final String twitterToken,final String twitterSecret,final MyTwitterListener callBack) {
 		final Handler callerThreadHandler = new Handler();
 		new Thread() {
 			@Override
@@ -46,6 +52,11 @@ public class TwitterService {
 	}
 	
 
+	 /*
+	  * This Function Makes a ArrayList of user Tweets with desired information
+	  * @param Twitter twitter
+	  * @return ArrayList<TwitterInfo> tweetsList
+	  */
 	private ArrayList<TwitterInfo> getTweets(Twitter twitter) {
 		ArrayList<TwitterInfo> tweetsList=new ArrayList<TwitterInfo>();
 		try{
@@ -67,11 +78,19 @@ public class TwitterService {
 		return tweetsList;
 
 	}
+	
+	
+	/*
+	 * This function Return User TweetList
+	 * @param String twitterToken
+	 * @param String twitterSecret
+	 * @return ArrayList<TwitterInfo>
+	 */
 	private ArrayList<TwitterInfo> getTwitterList(String twitterToken,String twitterSecret){
 		ConfigurationBuilder confbuilder = new ConfigurationBuilder();
 		Configuration conf = confbuilder
-							.setOAuthConsumerKey(Const.CONSUMER_KEY)
-							.setOAuthConsumerSecret(Const.CONSUMER_SECRET)
+							.setOAuthConsumerKey(Constants.CONSUMER_KEY)
+							.setOAuthConsumerSecret(Constants.CONSUMER_SECRET)
 							.setOAuthAccessToken(twitterToken)
 							.setOAuthAccessTokenSecret(twitterSecret)
 							.build();
@@ -79,4 +98,13 @@ public class TwitterService {
 		Twitter twitter = new TwitterFactory(conf).getInstance(accessToken);
 		return getTweets(twitter);
 	} 
+	
+	/*
+	 * interface to hadle callback when Tweets are loaded from Web
+	 */
+	public interface MyTwitterListener{
+		public void onTweetList(ArrayList<TwitterInfo> myTweets);
+		public void onError(String error);
+		
+	}
 }
