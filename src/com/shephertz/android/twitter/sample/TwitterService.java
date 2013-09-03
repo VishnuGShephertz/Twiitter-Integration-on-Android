@@ -105,6 +105,7 @@ public class TwitterService {
 	public interface MyTwitterListener{
 		public void onTweetList(ArrayList<TwitterInfo> myTweets);
 		public void onError(String error);
+		public void onStatusUpdate();
 		
 	}
 }

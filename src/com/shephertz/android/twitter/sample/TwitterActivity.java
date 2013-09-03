@@ -1,10 +1,12 @@
 package com.shephertz.android.twitter.sample;
 
 import java.util.ArrayList;
-
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,13 +15,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shephertz.android.twitter.sample.TwitterService.MyTwitterListener;
-
 
 /*
  * @author Vishnu Garg
@@ -32,7 +34,7 @@ public class TwitterActivity extends Activity implements MyTwitterListener{
     private ProgressDialog progressDialog;
     private String myTwittername;
     private ImageLoader imageLoader;
-
+    private String myTwitterToken,myTwitterTokenSecret;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,10 +62,10 @@ public class TwitterActivity extends Activity implements MyTwitterListener{
 		Intent intent=getIntent();
 		myTwittername=intent.getStringExtra(Constants.PREF_KEY_USER);
 		buildHeader();
-		String myToken=intent.getStringExtra(Constants.PREF_KEY_TOKEN);
-		String myTokenSecret=intent.getStringExtra(Constants.PREF_KEY_SECRET);
+		 myTwitterToken=intent.getStringExtra(Constants.PREF_KEY_TOKEN);
+		 myTwitterTokenSecret=intent.getStringExtra(Constants.PREF_KEY_SECRET);
 		showLaoding("Loading tweets.....");
-		new TwitterService().loadTweets(myToken,myTokenSecret,this);
+		new TwitterService().loadTweets(myTwitterToken,myTwitterTokenSecret,this);
 		}
 		catch(Exception e){
 		}
@@ -192,6 +194,49 @@ public class TwitterActivity extends Activity implements MyTwitterListener{
 			return position;
 		}
 
+	}
+	/**
+     * Create and return an example alert dialog with an edit text box.
+     */
+    private void createLoginPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update status");
+       final EditText input = new EditText(this);
+       input.setHint("Your status here  ");
+        builder.setView(input);
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+ 
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	updateMyTwitterStatus(input.getText().toString());
+                       
+            }
+        });
+ 
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+ 
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+           
+            }
+        });
+ 
+        builder.show();
+    }
+    
+    private void updateMyTwitterStatus(String status){
+    	App42Service.instance().upDateStatus(myTwittername, myTwitterToken, myTwitterTokenSecret, status, this);
+    }
+	
+	public void onStatusUpdateClicked(View view){
+		createLoginPopup();
+	}
+
+	@Override
+	public void onStatusUpdate() {
+		// TODO Auto-generated method stub
+		Toast.makeText(TwitterActivity.this, "Twitter Status is updated", Toast.LENGTH_SHORT).show();
+		
 	}
 
 }

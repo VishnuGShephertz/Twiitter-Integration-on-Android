@@ -8,6 +8,14 @@
 
   <include layout="@layout/header"/>
 
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+           android:onClick="onStatusUpdateClicked"
+           android:layout_marginTop="2dp"
+            android:text="Update Status" />
+   
     <LinearLayout
 	android:orientation="vertical" 
 	android:layout_width="fill_parent"
