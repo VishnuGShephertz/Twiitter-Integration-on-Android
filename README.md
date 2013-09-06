@@ -1,14 +1,16 @@
 Twitter-Integration-on-Android
 ===============================
 
-This sample application shows how easily we can we link our application through Twitter.
+This sample application shows how easily we can we link our application through Twitter.This Sample also Uses App42 SocialService 
+API.
 
 # About Sample application
 
 1. This sample shows how can we create application on twitter and generate Consumer-Key and Secret-Key .
-2. How can we authenticate Twitter User with our android application.
-2. How can we show Tweets of User with all details.
-3. How can a user re-tweet those tweets again.
+2. How easily we can authenticate Twitter User with our android application.
+2. How easily we can show Tweets of User with all details.
+3. How easily user can  re-tweet those tweets again.
+4. How easily we can update our Twitter Status using APP42 SocialService API
 
 
 # Running Sample
@@ -18,15 +20,19 @@ This sample application shows how easily we can we link our application through 
 3. After successful login on Twitter, click on Create a new application button.
 4. Fill the desired information and create your Twitter application.
 5. You can find your Consumer key and Consumer secret here in OAuth settings option.
-6. Download the project from [here] (https://github.com/VishnuGShephertz/Twiitter-Integration-on-Android/archive/master.zip) and import it in the eclipse.<br/>
-7. Open Constants.java file and make following changes.
+6. Now [Register] (https://apphq.shephertz.com/register) with App42 platform.
+7. Create an app once, you are on Quick start page after registration.
+8. If you are already registered, login to [AppHQ] (http://apphq.shephertz.com) console and create an app from App Manager Tab.
+9. Download the project from [here] (https://github.com/VishnuGShephertz/Twiitter-Integration-on-Android/archive/master.zip) and import it in the eclipse.<br/>
+10.Open Constants.java file and make following changes.
 
 ```
-A. Change CONSUMER_KEY with your Consumer key from step 5 at line no 5.
-B. Change CONSUMER_SECRET with your Consumer secret from step 5 at line no 6.
+A. Change CONSUMER_KEY with your Consumer key from step 5 at line no 7.
+B. Change CONSUMER_SECRET with your Consumer secret from step 5 at line no 8.
+C. Change API_KEY and SECRET_KEY that you have received in step 7 or 8 at line number 10 and 11.
 ```
-8.&nbsp; Here we are using twitter4j-core-3.0.3.jar for Twitter  integration.<br/>
-9.&nbsp; Build your android application and install on your android device.<br/>
+11.&nbsp; Here we are using twitter4j-core-3.0.3.jar for Twitter  integration.<br/>
+.&nbsp; Build your android application and install on your android device.<br/>
 
 # Design Details:
 
@@ -140,3 +146,41 @@ This function is written in TwitterService.java file.
 		return tweetsList;
 
 	}
+```
+
+__Update Twitter Status :__ Using App42 SocialService API we can easily update our Twitter Status like this..
+This function is written in TwitterService.java file.
+
+```
+     	void upDateStatus(final String userName,final String twitterToken,final String twitterSecret,final String status,final MyTwitterListener callBack) {
+		final Handler callerThreadHandler = new Handler();
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+				
+					Social socialObj = socialService.linkUserTwitterAccount(userName,
+							twitterToken, twitterSecret,
+							Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+					socialService.updateTwitterStatus(userName, status);
+					callerThreadHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							callBack.onStatusUpdate();
+						}
+					});
+				} catch (final Exception ex) {
+					callerThreadHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							if(callBack!=null){
+								callBack.onError(ex.toString());
+							}
+					
+						}
+					});
+				}
+			}
+		}.start();
+	}
+```
