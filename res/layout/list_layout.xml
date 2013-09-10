@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" 
-	android:background="@color/bgcolor"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   android:background="@color/bgcolor">
 
-	>
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/header"
+         />
 
-  <include layout="@layout/header"/>
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-           android:onClick="onStatusUpdateClicked"
-           android:layout_marginTop="2dp"
-            android:text="Update Status" />
-   
-    <LinearLayout
-	android:orientation="vertical" 
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent" 
-	android:id="@+id/main_parent"   >
-
-    
-            <ListView 
-                android:id="@+id/list"
-                 android:layout_marginTop="15dp"
+    <ListView
+              android:id="@+id/list"
+                 android:layout_marginTop="5dp"
+                   android:layout_marginBottom="5dp"
+                   android:layout_above="@+id/button1"
+                   android:layout_below="@+id/page_header"
                 android:layout_width="fill_parent" 
                 android:layout_height="wrap_content" 
      			android:background="@drawable/bg9"
                 android:cacheColorHint="@android:color/transparent"
-               
-                 />
-            </LinearLayout>
+       />
 
-</LinearLayout>
+  <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:onClick="onStatusUpdateClicked"
+           android:layout_marginTop="2dp"
+           android:layout_centerHorizontal="true"
+           android:layout_alignParentBottom="true"
+           android:background="@drawable/medium_btn_style"
+            android:text="Update Status" />
+
+</RelativeLayout>
