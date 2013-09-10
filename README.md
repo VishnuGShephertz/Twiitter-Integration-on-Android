@@ -32,7 +32,7 @@ B. Change CONSUMER_SECRET with your Consumer secret from step 5 at line no 8.
 C. Change API_KEY and SECRET_KEY that you have received in step 7 or 8 at line number 10 and 11.
 ```
 11.&nbsp; Here we are using twitter4j-core-3.0.3.jar for Twitter  integration.<br/>
-.&nbsp; Build your android application and install on your android device.<br/>
+12.&nbsp; Build your android application and install on your android device.<br/>
 
 # Design Details:
 
